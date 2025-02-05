@@ -1,0 +1,137 @@
+import time
+import matplotlib.pyplot as plt
+import numpy as np
+
+def compute_runtime(size):
+    counter = 1
+    for outer in range(size):
+        for inner in range(size):
+            counter += 1
+    return counter
+
+size_values = np.array([1, 2, 3, 5, 10, 20, 50, 100, 200, 500])
+execution_times = []
+
+for size in size_values:
+    start_time = time.time()
+    compute_runtime(size)
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    execution_times.append(elapsed_time)
+
+execution_times = [t * 1000 for t in execution_times]
+
+plt.figure(figsize=(10, 6))
+plt.plot(size_values, execution_times, 'o', label='Measured Time')
+plt.xlabel('Size (n)')
+plt.ylabel('Time (ms)')
+plt.title('Execution Time of compute_runtime(n) vs n')
+
+coefficients = np.polyfit(size_values, execution_times, 2)
+polynomial_fit = np.poly1d(coefficients)
+size_fit = np.linspace(min(size_values), max(size_values), 50)
+time_fit = polynomial_fit(size_fit)
+plt.plot(size_fit, time_fit, '-', label='Polynomial Fit')
+
+plt.legend()
+plt.grid(True)
+plt.show()
+
+import time
+import matplotlib.pyplot as plt
+import numpy as np
+
+def compute_value(limit):
+    result = 1
+    for i in range(limit):
+        for j in range(limit):
+            result += 1
+    return result
+
+input_sizes = np.array([1, 2, 3, 5, 10, 20, 50, 100, 200, 500])
+execution_times = []
+
+for size in input_sizes:
+    start_time = time.time()
+    compute_value(size)
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    execution_times.append(elapsed_time)
+
+execution_times = [time_ms * 1000 for time_ms in execution_times]
+
+polynomial_coeffs = np.polyfit(input_sizes, execution_times, 2)
+polynomial_model = np.poly1d(polynomial_coeffs)
+
+fitted_x = np.linspace(min(input_sizes), max(input_sizes), 50)
+fitted_y = polynomial_model(fitted_x)
+
+plt.figure(figsize=(10, 6))
+
+plt.subplot(1, 2, 1)
+plt.plot(input_sizes, execution_times, 'o', label='Measured Time')
+plt.plot(fitted_x, fitted_y, '-', label='Polynomial Fit')
+plt.plot(fitted_x, 0.01 * fitted_x**2, '--', label='n^2 Lower Bound', color='green')
+plt.plot(fitted_x, 10 * fitted_x**2, '--', label='n^2 Upper Bound', color='red')
+plt.xlabel('Input Size (n)')
+plt.ylabel('Execution Time (ms)')
+plt.title('Runtime of compute_value(n) vs n')
+plt.legend()
+plt.grid(True)
+
+plt.subplot(1, 2, 2)
+zoomed_range = (10, 100)
+plt.plot(input_sizes, execution_times, 'o', label='Measured Time')
+plt.plot(fitted_x, fitted_y, '-', label='Polynomial Fit')
+plt.plot(fitted_x, 0.01 * fitted_x**2, '--', label='n^2 Lower Bound', color='green')
+plt.plot(fitted_x, 10 * fitted_x**2, '--', label='n^2 Upper Bound', color='red')
+plt.xlim(zoomed_range)
+plt.ylim(0, max(execution_times) * 1.1)
+plt.xlabel('Input Size (n)')
+plt.ylabel('Execution Time (ms)')
+plt.title('Zoomed-in View of Runtime vs n')
+plt.legend()
+plt.grid(True)
+
+approx_n = 50
+plt.axvline(x=approx_n, color='magenta', linestyle='--', label=f'Approximate n = {approx_n}')
+plt.legend()
+
+plt.show()
+
+print("Fitted Polynomial Coefficients:", polynomial_coeffs)
+
+
+def merge_sort(data):
+    if len(data) > 1:
+        mid_point = len(data) // 2
+        left_half = data[:mid_point]
+        right_half = data[mid_point:]
+
+        merge_sort(left_half)
+        merge_sort(right_half)
+
+        left_index = right_index = merge_index = 0
+
+        while left_index < len(left_half) and right_index < len(right_half):
+            if left_half[left_index] < right_half[right_index]:
+                data[merge_index] = left_half[left_index]
+                left_index += 1
+            else:
+                data[merge_index] = right_half[right_index]
+                right_index += 1
+            merge_index += 1
+
+        while left_index < len(left_half):
+            data[merge_index] = left_half[left_index]
+            left_index += 1
+            merge_index += 1
+
+        while right_index < len(right_half):
+            data[merge_index] = right_half[right_index]
+            right_index += 1
+            merge_index += 1
+
+sample_array = [5, 2, 4, 7, 1, 3, 2, 6]
+merge_sort(sample_array)
+print(sample_array)
